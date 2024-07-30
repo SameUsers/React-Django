@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'Django_main',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -48,6 +49,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 'rest_framework.middleware.AuthenticationMiddleware',
+    # 'rest_framework.middleware.AuthorizationMiddleware',
 ]
 
 ROOT_URLCONF = 'Django_React.urls'
@@ -68,7 +71,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'Django_React.wsgi.application'
+# WSGI_APPLICATION = 'Django_React.wsgi.application'
 
 
 # Database
