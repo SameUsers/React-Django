@@ -6,7 +6,7 @@ import axios from "axios"
 class SearchBar extends React.Component{
     constructor(props){
     super(props)
-    this.state={api:[],searchbar:[],nextApi:'', baseurl:"http://127.0.0.1:8000/API/FlatsAPI/?limit=10"}
+    this.state={api:[],searchbar:[],nextApi:'',count:1, baseurl:"http://127.0.0.1:8000/API/FlatsAPI/?limit=10"}
     this.searching=this.searching.bind(this)
     this.next=this.next.bind(this)
     axios.get(this.state.baseurl).then(res=>this.setState({nextApi:res.data.next}))
@@ -25,10 +25,11 @@ class SearchBar extends React.Component{
     </form>
     <div className="Card">
         <ProductCard apivalue={this.state.api}/>
-    <div className="Next">
-        <input type="button" onClick={this.next} value="Next"/>
-    </div>
+    <div>
+        <input className="Next" type="button" onClick={this.next}/>
+        <p> Page: {this.state.count}</p>
 
+    </div>
     </div>
 
 </div>
@@ -45,9 +46,10 @@ class SearchBar extends React.Component{
 
         next(){
             this.setState({baseurl:this.state.nextApi})
-            axios.get(this.state.baseurl).then(res=>this.setState({api:res.data.results}))
-            axios.get(this.state.baseurl).then(res=>this.setState({nextApi:res.data.next}))
-            console.log(this.state.nextApi)
+            axios.get(this.state.nextApi).then(res=>this.setState({api:res.data.results}))
+            axios.get(this.state.nextApi).then(res=>this.setState({nextApi:res.data.next}))
+            this.setState({count:this.state.count+1})
+            console.log(this.state.baseurl)
         }
 
 
