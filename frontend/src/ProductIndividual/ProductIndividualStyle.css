@@ -1,0 +1,46 @@
+.carousel-inner{
+    width: 400px;
+    high: 400px;
+    margin-left:20px;
+    margin-top:10px;
+}
+
+.Name{
+    float:left;
+    font-size: 24px;
+
+}
+.Description{
+    float:left;
+    margin-left:30%;
+
+
+}
+#carouselExampleIndicators{
+    width:28%;
+
+}
+.Name{
+
+    margin-left:35px;
+    font-weight: bold;
+
+}
+.card-header{
+    font-weight: bold;
+
+}
+.card{
+    width:60%;
+
+}
+.CardIndividual{
+    margin-top: 105px;
+    padding:10px;
+    height:80%;
+    width:100%;
+    position:fixed;
+    margin:10px;
+    padding:5px
+
+}
