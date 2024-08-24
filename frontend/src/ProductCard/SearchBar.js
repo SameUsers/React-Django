@@ -1,61 +1,111 @@
-import React from 'react';
-import ProductCard from "./ProductCard"
-import axios from "axios"
+import React, { useState, useEffect } from 'react';
+import ProductCard from "./ProductCard";
+import axios from "axios";
+
+const SearchBar = () => {
+    const [api, setApi] = useState([]);
+    const [searchbar, setSearchbar] = useState('');
+    const [nextApi, setNextApi] = useState('');
+    const [prevApi, setPrevApi] = useState('');
+    const [baseurl] = useState("http://127.0.0.1:8000/API/FlatsAPI/?limit=10");
 
 
-class SearchBar extends React.Component{
-    constructor(props){
-    super(props)
-    this.state={api:[],searchbar:[],nextApi:'',count:1, baseurl:"http://127.0.0.1:8000/API/FlatsAPI/?limit=10"}
-    this.searching=this.searching.bind(this)
-    this.next=this.next.bind(this)
-    axios.get(this.state.baseurl).then(res=>this.setState({nextApi:res.data.next}))
-    axios.get(this.state.baseurl).then(res=>this.setState({api:res.data.results}))
-    }
+    const token = localStorage.getItem('token');
 
 
-    render(){
-    return(
-<div className="MainAreaProductList">
-    <form className="SearchBar">
-        <label htmlFor="Search" >Поиск по цене</label>
-            <input type ="text" class ="Search"placeholder="800.00" onChange={(e)=>this.setState({searchbar:e.target.value})}/>
-            <button type="button" onClick={this.searching}>Подтвердить</button>
-            <button type="submit">Сбросить фильтр</button>
-    </form>
-    <div className="Card">
-        <ProductCard apivalue={this.state.api}/>
-    <div>
-        <input className="Next" type="button" onClick={this.next}/>
-        <p> Page: {this.state.count}</p>
-
-    </div>
-    </div>
-
-</div>
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await axios.get(baseurl, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                setApi(response.data.results);
+                setNextApi(response.data.next);
+                setPrevApi(response.data.previous || '');
+            } catch (error) {
+                console.error("Error fetching data: ", error);
+            }
+        };
+        fetchData();
+    }, [baseurl, token]);
 
 
+    const searching = () => {
+        const filteredApi = api.filter(el => el.price.toString() === searchbar);
+        setApi(filteredApi);
+    };
 
-    )
 
-    }
-      searching(event){
-
-        this.setState({api : this.state.api.filter(el => el.price === (this.state.searchbar))})
+    const loadNextPage = async () => {
+        if (nextApi) {
+            try {
+                const response = await axios.get(nextApi, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                setApi(response.data.results);
+                setNextApi(response.data.next);
+                setPrevApi(response.data.previous || '');
+            } catch (error) {
+                console.error("Error fetching next page: ", error);
+            }
         }
+    };
 
-        next(){
-            this.setState({baseurl:this.state.nextApi})
-            axios.get(this.state.nextApi).then(res=>this.setState({api:res.data.results}))
-            axios.get(this.state.nextApi).then(res=>this.setState({nextApi:res.data.next}))
-            this.setState({count:this.state.count+1})
-            console.log(this.state.baseurl)
+
+    const loadPrevPage = async () => {
+        if (prevApi) {
+            try {
+                const response = await axios.get(prevApi, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                setApi(response.data.results);
+                setNextApi(response.data.next);
+                setPrevApi(response.data.previous || '');
+            } catch (error) {
+                console.error("Error fetching previous page: ", error);
+            }
         }
+    };
 
-
-    }
-
-
-
+    return (
+        <div className="MainAreaProductList">
+            <form className="SearchBar" onSubmit={(e) => e.preventDefault()}>
+                <label htmlFor="Search">Поиск по цене</label>
+                <input
+                    type="text"
+                    className="Search"
+                    placeholder="800.00"
+                    value={searchbar}
+                    onChange={(e) => setSearchbar(e.target.value)}
+                />
+                <button type="button" onClick={searching}>Подтвердить</button>
+                <button type="button" onClick={() => setSearchbar('')}>Сбросить фильтр</button>
+            </form>
+            <div className="Card">
+                <ProductCard apivalue={api} />
+                <div className="Pagination">
+                    <input
+                        type="button"
+                        onClick={loadPrevPage}
+                        value="Назад"
+                        disabled={!prevApi}
+                    />
+                    <input
+                        type="button"
+                        onClick={loadNextPage}
+                        value="Next"
+                        disabled={!nextApi}
+                    />
+                </div>
+            </div>
+        </div>
+    );
+};
 
 export default SearchBar;

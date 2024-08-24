@@ -1,6 +1,5 @@
 import React from 'react';
 import FotoArea from "./FotoArea"
-import NavBar from "./NavBar"
 import Description from "./Description"
 import axios from "axios"
 import "./ProductIndividualStyle.css"
@@ -24,15 +23,14 @@ class ProductIndividual extends React.Component{
     render(){
     return(
 <div>
-    <div className="Nav">
-            <NavBar/>
-    </div>
-
     <div className="Description">
           <Description info={this.state.api.description} price={this.state.api.price+"$"} name={this.state.api.name}/>
     </div>
     <div>
-        <FotoArea/>
+        <FotoArea url={this.state.api.img}/>
+        <p className="Date">Дата создания: {this.state.api.date}</p>
+        <p className="Members"> Количество мест: {this.state.api.members}</p>
+        <p className="Members"> Местоположение: {this.state.api.location}</p>
     </div>
 
 

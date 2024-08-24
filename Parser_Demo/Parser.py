@@ -23,11 +23,15 @@ for i in object_name:
     name.append(i.text)
     print(i.text)
 
+db={}
+
+for i in range(0,len(name)):
+    db[name[i]]=description[i]
 
 conn = psycopg2.connect(dbname='postgres', user='postgres', password='postgres', host='127.0.0.1', port="5432")
 cursor = conn.cursor()
-for i in name:
-    for a in description:
+for i in db.keys():
+        a=db[i]
         cursor.execute(f"""INSERT INTO "Django_main_flat" (name,description,date,price) VALUES('{i}','{a}','{datetime.date.today()}',{random.randint(100,1000)})""")
         conn.commit()
 cursor.close()
